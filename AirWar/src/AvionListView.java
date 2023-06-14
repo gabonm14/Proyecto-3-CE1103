@@ -18,28 +18,47 @@ import static javafx.application.Application.launch;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 
+/**
+ *
+ * Esta clase representa una vista de lista de aviones.
+ *
+ * Extiende la clase Application de JavaFX para proporcionar una interfaz
+ * gráfica de usuario.
+ */
 public class AvionListView extends Application {
 
-    private ListView<Avion> listView;
-    private ObservableList<Avion> aviones;
-    private List<Lugar> lugares;
-    private ComboBox<Lugar> dropdown;
-    private ComboBox<String> filtroDropdown; // Nuevo ComboBox para el filtro
+    private ListView<Avion> listView; // Lista de aviones
+    private ObservableList<Avion> aviones; // Lista observable de aviones
+    private List<Lugar> lugares; // Lista de lugares
+    private ComboBox<Lugar> dropdown; // ComboBox de lugares
+    private ComboBox<String> filtroDropdown; // ComboBox para el filtro
 
-    private Lugar opcionSeleccionada;
+    private Lugar opcionSeleccionada; // Lugar seleccionado
 
+    /**
+     *
+     * Método principal de la aplicación.
+     *
+     * @param args Los argumentos de línea de comandos.
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     *
+     * Método que se llama al iniciar la aplicación.
+     *
+     * @param primaryStage El escenario principal de la aplicación.
+     */
     @Override
     public void start(Stage primaryStage) {
-        // Crear la lista de aviones
+// Crear la lista de aviones
         aviones = FXCollections.observableArrayList();
         cargarAvionesDesdeArchivo("src/archivos/aviones.txt");
         System.out.println(aviones);
 
-        // Crear el ListView
+// Crear el ListView
         listView = new ListView<>(aviones);
         listView.setPrefWidth(400);
         listView.setPrefHeight(300);
@@ -61,9 +80,10 @@ public class AvionListView extends Application {
                 };
             }
         });
-        Label lugarLabel = new Label("Selecciona un Lugar");
-        lugares = MapApp.graph.nodes;
-        dropdown = new ComboBox<>();
+
+        Label lugarLabel = new Label("Selecciona un Lugar"); // Etiqueta para el lugar
+        lugares = MapApp.graph.nodes; // Obtener lista de lugares desde MapApp.graph
+        dropdown = new ComboBox<>(); // ComboBox de lugares
         dropdown.getItems().addAll(lugares);
         dropdown.setCellFactory(new Callback<ListView<Lugar>, ListCell<Lugar>>() {
             @Override
@@ -85,21 +105,18 @@ public class AvionListView extends Application {
             Lugar lugarSeleccionado = dropdown.getValue();
             if (lugarSeleccionado != null) {
                 opcionSeleccionada = lugarSeleccionado;
-                // Realiza cualquier acción adicional que desees con el lugar seleccionado
+// Realiza cualquier acción adicional que desees con el lugar seleccionado
             }
         });
 
-        filtroDropdown = new ComboBox<>();
-
-        filtroDropdown.getItems().addAll("Eficiencia", "Velocidad");
+        filtroDropdown = new ComboBox<>(); // ComboBox para el filtro
+        filtroDropdown.getItems().addAll("Eficiencia", "Velocidad", "Fortaleza");
         filtroDropdown.setOnAction(event -> filtrarAviones(filtroDropdown.getValue()));
         HBox hboxFiltro = new HBox();
         hboxFiltro.setAlignment(Pos.CENTER_RIGHT);
-
-// Otros códigos relacionados con el ComboBox
         hboxFiltro.getChildren().add(filtroDropdown);
 
-        Button seleccionarBtn = new Button("Seleccionar");
+        Button seleccionarBtn = new Button("Seleccionar"); // Botón de selección
         seleccionarBtn.setAlignment(Pos.CENTER_RIGHT);
         seleccionarBtn.setOnAction(event -> {
             Avion avionSeleccionado = new Avion(
@@ -108,37 +125,46 @@ public class AvionListView extends Application {
                     listView.getSelectionModel().getSelectedItem().getEficiencia(),
                     listView.getSelectionModel().getSelectedItem().getFortaleza());
             if (avionSeleccionado != null) {
-                // Llamar al método de creación del objeto en OtraClase
+// Llamar al método de creación del objeto en OtraClase
                 MapApp.graph.recibirAvion(opcionSeleccionada, avionSeleccionado);
             }
         });
 
-        // Crear el campo de búsqueda
+// Crear el campo de búsqueda
         TextField buscarField = new TextField();
         Button buscarBtn = new Button("Buscar");
         buscarBtn.setOnAction(event -> buscarAvionPorNombre(buscarField.getText()));
 
         HBox buscarContainer = new HBox(10);
         buscarContainer.getChildren().addAll(buscarField, buscarBtn, hboxFiltro);
-        // Crear el contenedor principal
+
+// Crear el contenedor principal
         VBox root = new VBox(10);
         root.getChildren().addAll(lugarLabel, dropdown, buscarContainer, listView, seleccionarBtn);
 
-        // Configurar la escena y mostrar la ventana
+// Configurar la escena y mostrar la ventana
         Scene scene = new Scene(root, 400, 400);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Lista de Aviones");
         primaryStage.show();
     }
 
+    /**
+     *
+     * Filtra la lista de aviones según el criterio seleccionado.
+     *
+     * @param filtro El filtro seleccionado.
+     */
     private void filtrarAviones(String filtro) {
         Comparator<Avion> comparador;
         if (filtro.equalsIgnoreCase("Eficiencia")) {
             comparador = Comparator.comparing(Avion::getEficiencia);
         } else if (filtro.equalsIgnoreCase("Velocidad")) {
             comparador = Comparator.comparing(Avion::getVelocidad);
+        } else if (filtro.equalsIgnoreCase("Fortaleza")) {
+            comparador = Comparator.comparing(Avion::getFortaleza);
         } else {
-            // Si no se selecciona un filtro válido, no se aplica ningún filtro
+// Si no se selecciona un filtro válido, no se aplica ningún filtro
             return;
         }
 
@@ -147,18 +173,45 @@ public class AvionListView extends Application {
         aviones.setAll(avionesList);
     }
 
+    /**
+     *
+     * Ordena la lista de aviones por eficiencia utilizando el algoritmo Shell
+     * Sort.
+     */
     private void ordenarPorEficiencia() {
         List<Avion> avionesList = new ArrayList<>(aviones);
         shellSort(avionesList);
         aviones.setAll(avionesList);
     }
 
+    /**
+     *
+     * Ordena la lista de aviones por velocidad utilizando el algoritmo
+     * Insertion Sort.
+     */
     private void ordenarPorVelocidad() {
         List<Avion> avionesList = new ArrayList<>(aviones);
         insertionSort(avionesList);
         aviones.setAll(avionesList);
     }
 
+    /**
+     *
+     * Ordena la lista de aviones por fortaleza utilizando el algoritmo Bubble
+     * Sort.
+     */
+    private void ordenarPorFortaleza() {
+        List<Avion> avionesList = new ArrayList<>(aviones);
+        bubbleSort(avionesList);
+        aviones.setAll(avionesList);
+    }
+
+    /**
+     *
+     * Busca un avión por su nombre en la lista de aviones.
+     *
+     * @param nombre El nombre del avión a buscar.
+     */
     private void buscarAvionPorNombre(String nombre) {
         for (Avion avion : aviones) {
             if (avion.getNombre().equalsIgnoreCase(nombre)) {
@@ -170,6 +223,12 @@ public class AvionListView extends Application {
         listView.getSelectionModel().clearSelection();
     }
 
+    /**
+     *
+     * Carga la lista de aviones desde un archivo de texto.
+     *
+     * @param archivo La ruta del archivo de texto.
+     */
     private void cargarAvionesDesdeArchivo(String archivo) {
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
@@ -190,6 +249,13 @@ public class AvionListView extends Application {
         }
     }
 
+    /**
+     *
+     * Implementa el algoritmo Shell Sort para ordenar la lista de aviones por
+     * eficiencia.
+     *
+     * @param lista La lista de aviones a ordenar.
+     */
     private void shellSort(List<Avion> lista) {
         int n = lista.size();
         int intervalo = 1;
@@ -211,6 +277,13 @@ public class AvionListView extends Application {
         }
     }
 
+    /**
+     *
+     * Implementa el algoritmo Insertion Sort para ordenar la lista de aviones
+     * por velocidad.
+     *
+     * @param lista La lista de aviones a ordenar.
+     */
     private void insertionSort(List<Avion> lista) {
         int n = lista.size();
         for (int i = 1; i < n; ++i) {
@@ -221,6 +294,26 @@ public class AvionListView extends Application {
                 j = j - 1;
             }
             lista.set(j + 1, key);
+        }
+    }
+
+    /**
+     *
+     * Implementa el algoritmo Bubble Sort para ordenar la lista de aviones por
+     * fortaleza.
+     *
+     * @param lista La lista de aviones a ordenar.
+     */
+    private void bubbleSort(List<Avion> lista) {
+        int n = lista.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (lista.get(j).getFortaleza() > lista.get(j + 1).getFortaleza()) {
+                    Avion temp = lista.get(j);
+                    lista.set(j, lista.get(j + 1));
+                    lista.set(j + 1, temp);
+                }
+            }
         }
     }
 }
