@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class AirPort extends Lugar {
 
@@ -14,13 +15,27 @@ public class AirPort extends Lugar {
         this.nombre = nombre;
         this.capacidadHangares = capacidadHangares;
         this.avionesEsperando = new ArrayList<>();
-        this.combustibleDisponible = 0;
+        Random random = new Random();
+        this.combustibleDisponible = random.nextInt(80000) + 320000;
     }
-@Override
+
+    @Override
+
     public void recibirAvion(Avion avion) {
         if (avionesEsperando.size() < capacidadHangares) {
-            avionesEsperando.add(avion);
-            System.out.println("Avión " + avion + " recibido en el aeropuerto " + nombre);
+            if (avion.getEstado() != Avion.EstadoAvion.DESTRUIDO) {
+                avionesEsperando.add(avion);
+                int combustiblePromedio = combustibleDisponible / capacidadHangares;
+                int rango = combustiblePromedio / 2;
+                Random random = new Random();
+                int combustibleAsignado = combustiblePromedio + random.nextInt(rango) - rango / 2;
+                avion.gestionarCombustible(combustibleAsignado);
+                System.out.println("Avión " + avion + " recibido en el aeropuerto " + nombre);
+            }else{
+               System.out.print("El avion no llegó al Airport");
+            }
+            
+
         } else {
             System.out.println("Aeropuerto " + nombre + " sin espacio en los hangares. No se puede recibir el avión " + avion);
         }
@@ -42,10 +57,12 @@ public class AirPort extends Lugar {
             return null;
         }
     }
+
     @Override
-public List<Avion> getAvionesEsperando() {
+    public List<Avion> getAvionesEsperando() {
         return avionesEsperando;
     }
+
     // Otros métodos y getters/setters según sea necesario
     public double getLatitude() {
         return latitude;

@@ -1,4 +1,6 @@
+
 public class Ruta {
+
     private double peligro;
     private Lugar salida;
     private Lugar destino;
@@ -22,10 +24,17 @@ public class Ruta {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         // Radio de la Tierra en kilómetros
-        double r = 1000;
+        double r = 6637.1;
 
-        double distancia = r * c;
-        return distancia;
+        if (salida.getLongitude() < 0 && destino.getLongitude() > 0) {
+            //Aumenta el peso si es interoceanica aumenta un 20% el peso
+            double distancia = (r * c) + (r * c) * 0.2;
+            return distancia;
+        } else {
+            double distancia = r * c;
+            return distancia;
+        }
+
     }
 
     public double calcularPeso() {
@@ -38,13 +47,16 @@ public class Ruta {
             peso *= 1; // Aumenta el peso en un 0% si el destino es un aeropuerto
         }
 
-        peso += peligro; // Añade el valor del peligro a la distancia
+        if (peligro <= 1) {
+            return peso;
+        } else {
+            System.out.println("El peso de la ruta se ajusto a "+peso + (peso * getPeligro()));
+            return peso + (peso * getPeligro());
+        }
 
-        return peso;
     }
 
     // Getters y setters
-
     public Lugar getSalida() {
         return salida;
     }
@@ -66,6 +78,6 @@ public class Ruta {
     }
 
     public void setPeligro(double peligro) {
-        this.peligro = peligro;
+        this.peligro += peligro;
     }
 }
