@@ -1,6 +1,8 @@
-
 import com.fazecast.jSerialComm.*;
 
+/**
+ * Esta clase representa un receptor de Arduino que se utiliza para recibir datos a través de un puerto serial.
+ */
 public class ArduinoReceiver {
 
     private SerialPort serialPort;
@@ -8,17 +10,34 @@ public class ArduinoReceiver {
     private DataListener dataListener;
     private String dataReceived; // Variable de instancia para almacenar el valor recibido
 
+    /**
+     * Interfaz que define el método de devolución de llamada para recibir datos.
+     */
     public interface DataListener {
 
+        /**
+         * Método invocado cuando se reciben datos.
+         *
+         * @param data Los datos recibidos como una cadena.
+         */
         void onDataReceived(String data);
     }
 
+    /**
+     * Crea una nueva instancia de ArduinoReceiver.
+     */
     public ArduinoReceiver() {
         serialPort = null;
         isOpen = false;
         dataListener = null;
     }
 
+    /**
+     * Establece la conexión con el puerto serial especificado a la velocidad de baudios especificada.
+     *
+     * @param portName  El nombre del puerto serial al que se desea conectar.
+     * @param baudRate  La velocidad de baudios para la conexión.
+     */
     public void connect(String portName, int baudRate) {
         serialPort = SerialPort.getCommPort(portName);
         serialPort.setBaudRate(baudRate);
@@ -73,6 +92,9 @@ public class ArduinoReceiver {
         }
     }
 
+    /**
+     * Desconecta el puerto serial y detiene la recepción de datos.
+     */
     public void disconnect() {
         if (isOpen) {
             serialPort.removeDataListener();
@@ -81,10 +103,20 @@ public class ArduinoReceiver {
         }
     }
 
+    /**
+     * Establece el objeto DataListener para recibir las notificaciones de datos.
+     *
+     * @param listener El objeto DataListener que recibirá las notificaciones de datos.
+     */
     public void setDataListener(DataListener listener) {
         this.dataListener = listener;
     }
 
+    /**
+     * Obtiene los datos recibidos más recientes.
+     *
+     * @return Los datos recibidos como una cadena.
+     */
     public String getDataReceived() {
         return dataReceived;
     }

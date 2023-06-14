@@ -48,7 +48,8 @@ public class MapApp extends Application {
     AvionListView avionList = new AvionListView();
     private ArduinoReceiver arduinoReceiver = new ArduinoReceiver();
     public static String dataReceived = "0";
-public static int indexAvion;
+    public static int indexAvion;
+
     @Override
     public void start(Stage primaryStage) {
         Thread receivingThread = new Thread(() -> {
@@ -195,9 +196,6 @@ public static int indexAvion;
         StackPane root2 = new StackPane(animationCanvas);
         root.getChildren().add(root2);
         // Crear el botón y establecer su posición
-        
-        
-       
 
         //Scene scene = new Scene(root, MAP_WIDTH, MAP_HEIGHT);
         scene.setFill(Color.TRANSPARENT);
@@ -218,13 +216,12 @@ public static int indexAvion;
         AnimationTimer animationTimer = new AnimationTimer() {
 
             private double frameCount = 0;
-            
 
             @Override
             public void handle(long now) {
                 frameCount++;
-                if (avionesEnVuelo.size()<=indexAvion){
-                    indexAvion = avionesEnVuelo.size()-1;
+                if (avionesEnVuelo.size() <= indexAvion) {
+                    indexAvion = avionesEnVuelo.size() - 1;
                 }
                 if (dataReceived != null) {
                     try {
@@ -259,7 +256,7 @@ public static int indexAvion;
                     //drawRoute(animationGC, startX, startY, endX, endY);
                     // Dibujar la bola en la posición actual
                     if (!avionesEnVuelo.isEmpty()) {
-                        System.out.println("Index Avion "+indexAvion);
+                        System.out.println("Index Avion " + indexAvion);
                         if (avionesEnVuelo.get(indexAvion) == avionn) {
                             animationGC.setFill(Color.WHITE);
                         } else {
