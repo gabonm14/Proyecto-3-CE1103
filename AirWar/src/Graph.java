@@ -1,3 +1,4 @@
+
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -6,6 +7,7 @@ import javafx.scene.shape.Line;
 import java.util.*;
 
 public class Graph {
+
     private List<Node> nodes;
     private int[][] adjacencyMatrix;
 
@@ -101,7 +103,15 @@ public class Graph {
         return path;
     }
 
-    private class Node {
+    public Node getNode(int index) {
+        if (index >= 0 && index < nodes.size()) {
+            return nodes.get(index);
+        }
+        return null;
+    }
+
+    class Node {
+
         private double x;
         private double y;
         private Circle circle;
@@ -129,6 +139,7 @@ public class Graph {
     }
 
     private class NodeDistance implements Comparable<NodeDistance> {
+
         private int node;
         private int distance;
 

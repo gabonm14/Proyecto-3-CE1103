@@ -43,4 +43,5 @@ public class GraphVisualization extends Application {
         primaryStage.setTitle("Graph Visualization");
         primaryStage.show();
     }
+    
 }
