@@ -22,3 +22,6 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+/AirWarPruebas-8a46d9f35b439f7fa113dad4d0f1d1dc1d95737b/build/
+/AirWarPruebas-8a46d9f35b439f7fa113dad4d0f1d1dc1d95737b/nbproject/private/
+/AirWar/build/
