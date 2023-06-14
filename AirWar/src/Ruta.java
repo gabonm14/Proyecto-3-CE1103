@@ -42,16 +42,17 @@ public class Ruta {
         double peso = distancia;
 
         if (destino instanceof Portaavion) {
-            peso *= 1.2; // Aumenta el peso en un 20% si el destino es un portaaviones
+            peso *= 1.10; // Aumenta el peso en un 10% si el destino es un portaaviones
         } else {
             peso *= 1; // Aumenta el peso en un 0% si el destino es un aeropuerto
         }
 
         if (peligro <= 1) {
+            peligro = 1;
             return peso;
         } else {
-            System.out.println("El peso de la ruta se ajusto a "+peso + (peso * getPeligro()));
-            return peso + (peso * getPeligro());
+            //System.out.println("El peso de la ruta se ajusto a "+peso + (peso * getPeligro()));
+            return (peso * getPeligro());
         }
 
     }
