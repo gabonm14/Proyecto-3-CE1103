@@ -33,8 +33,8 @@ public class MapApp extends Application {
     private int nameAirport = 0;
     private Image mapImage;
     private PixelReader pixelReader;
-    private MapApp.Graph graph;
-    List<Lugar> ubicaciones = new ArrayList<>();
+    public static MapApp.Graph graph;
+    public static List<Lugar> ubicaciones = new ArrayList<>();
 
     private GraphicsContext gc;
     private int nRoutes = 100;
@@ -44,30 +44,29 @@ public class MapApp extends Application {
     List<Avion> avionesEnVuelo = new ArrayList<>();
     private LinkedListAvion tiposAvion = new LinkedListAvion();
     private int capMinHan = 6;
-    private int cantAvionesI=2;
+    private int cantAvionesI = 2;
     AvionListView avionList = new AvionListView();
 
     @Override
     public void start(Stage primaryStage) {
-//        Avion avionA = new Avion("Avion A", 850, 1200, 10);
-//        Avion avionB = new Avion("Avion B", 880, 1350, 11);
-//        Avion avionC = new Avion("Avion C", 900, 1400, 12);
-//        Avion avionD = new Avion("Avion D", 920, 1450, 13);
-//        Avion avionE = new Avion("Avion E", 940, 1500, 14);
-//        Avion avionF = new Avion("Avion F", 960, 1550, 15);
-//        Avion avionG = new Avion("Avion G", 980, 1580, 16);
-//        Avion avionH = new Avion("Avion H", 1000, 1600, 17);
-//        tiposAvion.agregarAvion(avionA);
-//        tiposAvion.agregarAvion(avionB);
-//        tiposAvion.agregarAvion(avionC);
-//        tiposAvion.agregarAvion(avionD);
-//        tiposAvion.agregarAvion(avionE);
-//        tiposAvion.agregarAvion(avionF);
-//        tiposAvion.agregarAvion(avionG);
-//        tiposAvion.agregarAvion(avionH);
- mostrarVentanaAvionListView();
+
+        Thread threadd = new Thread(() -> {
+            try {
+                Thread.sleep(3000); // Pausa de 3 segundos (3000 milisegundos)
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            Platform.runLater(() -> mostrarVentanaAvionListView());
+
+            while (true) {
+                // ... código del bucle principal ...
+            }
+        });
+
+        threadd.start();
         tiposAvion.cargarListaAviones("aviones.txt");
-      tiposAvion.imprimirAviones();
+        tiposAvion.imprimirAviones();
         mapImage = new Image("file:src/images/map.png");  // Ruta de la imagen del mapa
         pixelReader = mapImage.getPixelReader();
 
@@ -235,7 +234,7 @@ public class MapApp extends Application {
 
                     System.out.println("Distancia:  " + ruta.calcularPeso() * (distancia / ((distance))));
 // Dibujar la ruta
-                    System.out.println("Eficiencia: "+avionn.getEficiencia());
+                    System.out.println("Eficiencia: " + avionn.getEficiencia());
                     avionn.consumirCombustible((int) (avionn.getEficiencia() / 30));
                     //drawRoute(animationGC, startX, startY, endX, endY);
                     // Dibujar la bola en la posición actual
@@ -312,7 +311,7 @@ public class MapApp extends Application {
         return (latitude + latitudeRange / 2.0) / latitudeRange * MAP_HEIGHT;
     }
 
-    private void generateRandomAirports(Random random) {
+    public void generateRandomAirports(Random random) {
         for (int i = 0; i < NUM_AIRPORTS; i++) {
             double x, y;
             boolean isOnLand;
@@ -338,7 +337,7 @@ public class MapApp extends Application {
                 int z = 0;
                 while (z < (cantAvionesI)) {
                     Avion avion = new Avion(tiposAvion.obtenerAvion(7).getNombre(), tiposAvion.obtenerAvion(0).getVelocidad(), tiposAvion.obtenerAvion(0).getEficiencia(), tiposAvion.obtenerAvion(0).getFortaleza());
-                    
+
                     airport.recibirAvion(avion);
                     z++;
                 }
@@ -440,11 +439,13 @@ public class MapApp extends Application {
         double longitudeRange = 180.0; // Rango de longitudes posibles (-180 a 180)
         return (x / MAP_WIDTH) * longitudeRange - longitudeRange / 2.0;
     }
-private void mostrarVentanaAvionListView() {
+
+    private void mostrarVentanaAvionListView() {
         Stage stage = new Stage();
         AvionListView avionListView = new AvionListView();
         avionListView.start(stage);
     }
+
     private int calculateWeight(double lat1, double lon1, double lat2, double lon2) {
         // Calcular el peso (distancia) entre dos coordenadas geográficas
         // Puedes implementar aquí la fórmula de cálculo de distancia entre dos puntos geográficos
@@ -462,12 +463,16 @@ private void mostrarVentanaAvionListView() {
 
     public class Graph {
 
-        private List<Lugar> nodes;
+        List<Lugar> nodes;
         private Ruta[][] adjacencyMatrix;
 
         public Graph() {
             nodes = new ArrayList<>();
             adjacencyMatrix = new Ruta[0][0];
+        }
+
+        public List<Lugar> getNodes() {
+            return nodes;
         }
 
         public void addNode(Lugar lugar) {

@@ -42,4 +42,5 @@ public abstract class Lugar {
     public abstract Avion despacharAvion(Avion avion);
 
     public abstract List<Avion> getAvionesEsperando();
+    public abstract String getNombre();
 }
