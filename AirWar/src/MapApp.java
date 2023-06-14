@@ -41,14 +41,21 @@ public class MapApp extends Application {
     private StackPane root;
     private Scene scene;
     private Canvas animationCanvas = new Canvas(MAP_WIDTH, MAP_HEIGHT);
-    List<Avion> avionesEnVuelo = new ArrayList<>();
+    public static List<Avion> avionesEnVuelo = new ArrayList<>();
     private LinkedListAvion tiposAvion = new LinkedListAvion();
     private int capMinHan = 6;
     private int cantAvionesI = 2;
     AvionListView avionList = new AvionListView();
-
+    private ArduinoReceiver arduinoReceiver = new ArduinoReceiver();
+    public static String dataReceived = "0";
+public static int indexAvion;
     @Override
     public void start(Stage primaryStage) {
+        Thread receivingThread = new Thread(() -> {
+            startReceiving();
+        });
+
+        receivingThread.start();
 
         Thread threadd = new Thread(() -> {
             try {
@@ -156,13 +163,18 @@ public class MapApp extends Application {
 
     }
 
+    public void setData(String data) {
+        this.dataReceived = data;
+
+    }
+
     public void drawTravelingBall(List<Ruta> rutas, Avion avionn) {
         if (rutas.isEmpty() || avionn == null) {
             // No hay rutas en la lista
             return;
         }
         avionesEnVuelo.add(avionn);
-        System.out.println("Aviones en vuelo: " + avionesEnVuelo);
+        //System.out.println("Aviones en vuelo: " + avionesEnVuelo);
         Ruta ruta = rutas.get(0); // Obtener la primera ruta de la lista
         rutas.remove(0); // Eliminar la primera ruta de la lista
         // Convertir las coordenadas de latitud y longitud a coordenadas cartesianas
@@ -183,20 +195,9 @@ public class MapApp extends Application {
         StackPane root2 = new StackPane(animationCanvas);
         root.getChildren().add(root2);
         // Crear el botón y establecer su posición
-        Button myButton = new Button("Mi Botón");
-        myButton.setLayoutX(150);
-        myButton.setLayoutY(120);
-        root.getChildren().add(myButton);
-        myButton.setOnAction(e -> {
-            if (!avionesEnVuelo.isEmpty()) {
-                System.out.println("Aviones en vuelo print boton :" + avionesEnVuelo);
-                avionesEnVuelo.get(0).destruir();
-                // Eliminar el objeto de la lista (puedes ajustar la lógica según tus necesidades)
-                avionesEnVuelo.remove(0);
-                //System.out.println("Objeto eliminado: " + objetoEliminado);
-
-            }
-        });
+        
+        
+       
 
         //Scene scene = new Scene(root, MAP_WIDTH, MAP_HEIGHT);
         scene.setFill(Color.TRANSPARENT);
@@ -217,10 +218,29 @@ public class MapApp extends Application {
         AnimationTimer animationTimer = new AnimationTimer() {
 
             private double frameCount = 0;
+            
 
             @Override
             public void handle(long now) {
                 frameCount++;
+                if (avionesEnVuelo.size()<=indexAvion){
+                    indexAvion = avionesEnVuelo.size()-1;
+                }
+                if (dataReceived != null) {
+                    try {
+                        System.out.println("Datos recibidos: " + dataReceived);
+                        //System.out.println("Aviones en vuelo print boton :" + avionesEnVuelo);
+                        avionesEnVuelo.get(0).destruir();
+                        // Eliminar el objeto de la lista (puedes ajustar la lógica según tus necesidades)
+                        avionesEnVuelo.remove(0);
+                        //System.out.println("Objeto eliminado: " + objetoEliminado);
+
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MapApp.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    dataReceived = null;
+                }
 
                 if (frameCount <= totalFrames) {
                     // Calcular la posición actual de la bola
@@ -232,14 +252,15 @@ public class MapApp extends Application {
                     animationGC.clearRect(currentPosX - 10, currentPosY - 10, 20, 20);
                     //drawMap(animationGC);
 
-                    System.out.println("Distancia:  " + ruta.calcularPeso() * (distancia / ((distance))));
+                    //System.out.println("Distancia:  " + ruta.calcularPeso() * (distancia / ((distance))));
 // Dibujar la ruta
-                    System.out.println("Eficiencia: " + avionn.getEficiencia());
+                    //System.out.println("Eficiencia: " + avionn.getEficiencia());
                     avionn.consumirCombustible((int) (avionn.getEficiencia() / 30));
                     //drawRoute(animationGC, startX, startY, endX, endY);
                     // Dibujar la bola en la posición actual
                     if (!avionesEnVuelo.isEmpty()) {
-                        if (avionesEnVuelo.get(0) == avionn) {
+                        System.out.println("Index Avion "+indexAvion);
+                        if (avionesEnVuelo.get(indexAvion) == avionn) {
                             animationGC.setFill(Color.WHITE);
                         } else {
 
@@ -286,7 +307,7 @@ public class MapApp extends Application {
                     avionn.aterrizar();
                     avionesEnVuelo.remove(avionn);
                     graph.editEdge(ruta.getSalida(), ruta.getDestino(), -0.1);
-                    System.out.println("Distancia recorrida en total:  " + ruta.calcularPeso());
+                    //System.out.println("Distancia recorrida en total:  " + ruta.calcularPeso());
                     // Llamar recursivamente al método para la siguiente ruta en la lista
                     drawTravelingBall(rutas, avionn);
                     //graph.editEdge(ubicaciones.get(0), ubicaciones.get(1), -0.5);
@@ -428,6 +449,25 @@ public class MapApp extends Application {
         gc.setLineDashes(null);
     }
 
+    public void startReceiving() {
+        // Especifica el nombre del puerto y la velocidad de transmisión
+        String portName = "COM6";
+        int baudRate = 9600;
+
+        // Conecta con el dispositivo Arduino
+        arduinoReceiver.connect(portName, baudRate);
+
+        // Espera a recibir datos (puedes agregar más lógica aquí si es necesario)
+        try {
+            Thread.sleep(100000000); // Espera 5 segundos
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Desconecta el dispositivo Arduino
+        arduinoReceiver.disconnect();
+    }
+
     private double convertYToLatitude(double y) {
         // Convertir la coordenada Y del clic al valor de latitud correspondiente
         double latitudeRange = 90.0; // Rango de latitudes posibles (-90 a 90)
@@ -457,6 +497,7 @@ public class MapApp extends Application {
     }
 
     public static void main(String[] args) {
+
         launch(args);
 
     }

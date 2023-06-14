@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="Multi-file class diagram">
+  <ClassDiagramComponents>
+    <Class name="Aeropuerto" package="" visibility="public" xPosition="20.0" yPosition="20.0">
+      <Fields>
+        <Field name="cantidadHangares" type="int" visibility="private"/>
+        <Field name="hangares" type="List&lt;Hangar&gt;" visibility="private"/>
+        <Field name="coordenadaX" type="double" visibility="private"/>
+        <Field name="coordenadaY" type="double" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="int" name="cantidadHangares"/>
+          <Argument type="double" name="coordenadaX"/>
+          <Argument type="double" name="coordenadaY"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getCantidadHangares" returnType="int" visibility="public"/>
+        <Method name="setCantidadHangares" returnType="void" visibility="public">
+          <Argument type="int" name="cantidadHangares"/>
+        </Method>
+        <Method name="getHangares" returnType="List&lt;Hangar&gt;" visibility="public"/>
+        <Method name="setHangares" returnType="void" visibility="public">
+          <Argument type="List&lt;Hangar&gt;" name="hangares"/>
+        </Method>
+        <Method name="getCoordenadaX" returnType="double" visibility="public"/>
+        <Method name="setCoordenadaX" returnType="void" visibility="public">
+          <Argument type="double" name="coordenadaX"/>
+        </Method>
+        <Method name="getCoordenadaY" returnType="double" visibility="public"/>
+        <Method name="setCoordenadaY" returnType="void" visibility="public">
+          <Argument type="double" name="coordenadaY"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="AirPort" package="" visibility="public" xPosition="320.0" yPosition="20.0">
+      <Fields>
+        <Field name="nombre" type="String" visibility="private"/>
+        <Field name="capacidadHangares" type="int" visibility="private"/>
+        <Field name="avionesEsperando" type="List&lt;Avion&gt;" visibility="private"/>
+        <Field name="combustibleDisponible" type="int" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="nombre"/>
+          <Argument type="int" name="capacidadHangares"/>
+          <Argument type="double" name="latitude"/>
+          <Argument type="double" name="longitude"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="recibirAvion" returnType="void" visibility="public">
+          <Argument type="Avion" name="avion"/>
+        </Method>
+        <Method name="despacharAvion" returnType="Avion" visibility="public">
+          <Argument type="Avion" name="avion"/>
+        </Method>
+        <Method name="getAvionesEsperando" returnType="List&lt;Avion&gt;" visibility="public"/>
+        <Method name="getLatitude" returnType="double" visibility="public"/>
+        <Method name="getCapHang" returnType="double" visibility="public"/>
+        <Method name="getNombre" returnType="String" visibility="public"/>
+        <Method name="setLatitude" returnType="void" visibility="public">
+          <Argument type="double" name="latitude"/>
+        </Method>
+        <Method name="getLongitude" returnType="double" visibility="public"/>
+        <Method name="setLongitude" returnType="void" visibility="public">
+          <Argument type="double" name="longitude"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Avion" package="" visibility="public" xPosition="620.0" yPosition="20.0">
+      <Fields>
+        <Field name="nombre" type="String" visibility="private"/>
+        <Field name="velocidad" type="int" visibility="private"/>
+        <Field name="eficiencia" type="double" visibility="private"/>
+        <Field name="fortaleza" type="int" visibility="private"/>
+        <Field name="ubicacionActual" type="Lugar" visibility="private"/>
+        <Field name="estado" type="EstadoAvion" visibility="public"/>
+        <Field name="combustible" type="int" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="nombre"/>
+          <Argument type="int" name="velocidad"/>
+          <Argument type="double" name="eficiencia"/>
+          <Argument type="int" name="fortaleza"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="despegar" returnType="void" visibility="public">
+          <Argument type="Lugar" name="destino"/>
+        </Method>
+        <Method name="aterrizar" returnType="void" visibility="public"/>
+        <Method name="getNombre" returnType="String" visibility="public"/>
+        <Method name="getVelocidad" returnType="int" visibility="public"/>
+        <Method name="getEficiencia" returnType="double" visibility="public"/>
+        <Method name="getEstado" returnType="EstadoAvion" visibility="public"/>
+        <Method name="getCombustible" returnType="int" visibility="public"/>
+        <Method name="getFortaleza" returnType="int" visibility="public"/>
+        <Method name="actualizarUbicacion" returnType="void" visibility="public">
+          <Argument type="Lugar" name="nuevaUbicacion"/>
+        </Method>
+        <Method name="gestionarCombustible" returnType="void" visibility="public">
+          <Argument type="int" name="cantidad"/>
+        </Method>
+        <Method name="consumirCombustible" returnType="int" visibility="public">
+          <Argument type="int" name="cantidad"/>
+        </Method>
+        <Method name="destruir" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="AvionListView" package="" visibility="public" xPosition="920.0" yPosition="20.0">
+      <Fields>
+        <Field name="listView" type="ListView&lt;Avion&gt;" visibility="private"/>
+        <Field name="aviones" type="ObservableList&lt;Avion&gt;" visibility="private"/>
+        <Field name="lugares" type="List&lt;Lugar&gt;" visibility="private"/>
+        <Field name="dropdown" type="ComboBox&lt;Lugar&gt;" visibility="private"/>
+        <Field name="filtroDropdown" type="ComboBox&lt;String&gt;" visibility="private"/>
+        <Field name="opcionSeleccionada" type="Lugar" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+        <Method name="start" returnType="void" visibility="public">
+          <Argument type="Stage" name="primaryStage"/>
+        </Method>
+        <Method name="filtrarAviones" returnType="void" visibility="private">
+          <Argument type="String" name="filtro"/>
+        </Method>
+        <Method name="ordenarPorEficiencia" returnType="void" visibility="private"/>
+        <Method name="ordenarPorVelocidad" returnType="void" visibility="private"/>
+        <Method name="buscarAvionPorNombre" returnType="void" visibility="private">
+          <Argument type="String" name="nombre"/>
+        </Method>
+        <Method name="cargarAvionesDesdeArchivo" returnType="void" visibility="private">
+          <Argument type="String" name="archivo"/>
+        </Method>
+        <Method name="shellSort" returnType="void" visibility="private">
+          <Argument type="List&lt;Avion&gt;" name="lista"/>
+        </Method>
+        <Method name="insertionSort" returnType="void" visibility="private">
+          <Argument type="List&lt;Avion&gt;" name="lista"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Grafo" package="" visibility="public" xPosition="1220.0" yPosition="20.0">
+      <Fields>
+        <Field name="matrizAdyacencia" type="int[][]" visibility="private"/>
+        <Field name="aeropuertos" type="List&lt;AirPort&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="List&lt;AirPort&gt;" name="aeropuertos"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="agregarRuta" returnType="void" visibility="public">
+          <Argument type="AirPort" name="origen"/>
+          <Argument type="AirPort" name="destino"/>
+          <Argument type="int" name="peso"/>
+        </Method>
+        <Method name="obtenerPesoRuta" returnType="int" visibility="public">
+          <Argument type="AirPort" name="origen"/>
+          <Argument type="AirPort" name="destino"/>
+        </Method>
+        <Method name="obtenerMejorRuta" returnType="List&lt;AirPort&gt;" visibility="public">
+          <Argument type="AirPort" name="origen"/>
+          <Argument type="AirPort" name="destino"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Graph" package="" visibility="public" xPosition="1520.0" yPosition="20.0">
+      <Fields>
+        <Field name="nodes" type="List&lt;Node&gt;" visibility="private"/>
+        <Field name="adjacencyMatrix" type="int[][]" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="addNode" returnType="void" visibility="public">
+          <Argument type="double" name="x"/>
+          <Argument type="double" name="y"/>
+        </Method>
+        <Method name="addEdge" returnType="void" visibility="public">
+          <Argument type="int" name="source"/>
+          <Argument type="int" name="target"/>
+          <Argument type="int" name="weight"/>
+        </Method>
+        <Method name="drawGraph" returnType="void" visibility="public">
+          <Argument type="Pane" name="pane"/>
+        </Method>
+        <Method name="shortestPath" returnType="List&lt;Integer&gt;" visibility="public">
+          <Argument type="int" name="source"/>
+          <Argument type="int" name="target"/>
+        </Method>
+        <Method name="getNode" returnType="Node" visibility="public">
+          <Argument type="int" name="index"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="GraphVisualization" package="" visibility="public" xPosition="1820.0" yPosition="20.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+        <Method name="start" returnType="void" visibility="public">
+          <Argument type="Stage" name="primaryStage"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="LinkedListAvion" package="" visibility="public" xPosition="2120.0" yPosition="20.0">
+      <Fields>
+        <Field name="head" type="Nodo" visibility="private"/>
+        <Field name="size" type="int" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="cargarListaAviones" returnType="void" visibility="public">
+          <Argument type="String" name="nombreArchivo"/>
+        </Method>
+        <Method name="escribirListaAviones" returnType="void" visibility="public">
+          <Argument type="LinkedListAvion" name="listaAviones"/>
+          <Argument type="String" name="nombreArchivo"/>
+        </Method>
+        <Method name="agregarAvion" returnType="void" visibility="public">
+          <Argument type="Avion" name="avion"/>
+        </Method>
+        <Method name="obtenerAvion" returnType="Avion" visibility="public">
+          <Argument type="int" name="indice"/>
+        </Method>
+        <Method name="shellSort" returnType="void" visibility="public"/>
+        <Method name="setAvion" returnType="void" visibility="public">
+          <Argument type="int" name="indice"/>
+          <Argument type="Avion" name="avion"/>
+        </Method>
+        <Method name="imprimirAviones" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Lugar" package="" visibility="public" isAbstract="true" xPosition="20.0" yPosition="420.0">
+      <Fields>
+        <Field name="latitude" type="double" visibility="package"/>
+        <Field name="longitude" type="double" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="double" name="latitude"/>
+          <Argument type="double" name="longitude"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getLatitude" returnType="double" visibility="public"/>
+        <Method name="setLatitude" returnType="void" visibility="public">
+          <Argument type="double" name="latitude"/>
+        </Method>
+        <Method name="getLongitude" returnType="double" visibility="public"/>
+        <Method name="setLongitude" returnType="void" visibility="public">
+          <Argument type="double" name="longitude"/>
+        </Method>
+        <Method name="getX" returnType="double" visibility="public"/>
+        <Method name="getY" returnType="double" visibility="public"/>
+        <Method name="recibirAvion" returnType="void" visibility="public" isAbstract="true">
+          <Argument type="Avion" name="avion"/>
+        </Method>
+        <Method name="despacharAvion" returnType="Avion" visibility="public" isAbstract="true">
+          <Argument type="Avion" name="avion"/>
+        </Method>
+        <Method name="getAvionesEsperando" returnType="List&lt;Avion&gt;" visibility="public" isAbstract="true"/>
+        <Method name="getNombre" returnType="String" visibility="public" isAbstract="true"/>
+      </Methods>
+    </Class>
+    <Class name="MapApp" package="" visibility="public" xPosition="320.0" yPosition="420.0">
+      <Fields>
+        <Field name="MAP_WIDTH" type="double" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="MAP_HEIGHT" type="double" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="NUM_AIRPORTS" type="int" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="nameAirport" type="int" visibility="private"/>
+        <Field name="mapImage" type="Image" visibility="private"/>
+        <Field name="pixelReader" type="PixelReader" visibility="private"/>
+        <Field name="graph" type="MapApp.Graph" visibility="public" isStatic="true"/>
+        <Field name="ubicaciones" type="List&lt;Lugar&gt;" visibility="public" isStatic="true"/>
+        <Field name="gc" type="GraphicsContext" visibility="private"/>
+        <Field name="nRoutes" type="int" visibility="private"/>
+        <Field name="root" type="StackPane" visibility="private"/>
+        <Field name="scene" type="Scene" visibility="private"/>
+        <Field name="animationCanvas" type="Canvas" visibility="private"/>
+        <Field name="avionesEnVuelo" type="List&lt;Avion&gt;" visibility="package"/>
+        <Field name="tiposAvion" type="LinkedListAvion" visibility="private"/>
+        <Field name="capMinHan" type="int" visibility="private"/>
+        <Field name="cantAvionesI" type="int" visibility="private"/>
+        <Field name="avionList" type="AvionListView" visibility="package"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="start" returnType="void" visibility="public">
+          <Argument type="Stage" name="primaryStage"/>
+        </Method>
+        <Method name="drawTravelingBall" returnType="void" visibility="public">
+          <Argument type="List&lt;Ruta&gt;" name="rutas"/>
+          <Argument type="Avion" name="avionn"/>
+        </Method>
+        <Method name="convertLongitudeToX" returnType="double" visibility="private">
+          <Argument type="double" name="longitude"/>
+        </Method>
+        <Method name="convertLatitudeToY" returnType="double" visibility="private">
+          <Argument type="double" name="latitude"/>
+        </Method>
+        <Method name="generateRandomAirports" returnType="void" visibility="public">
+          <Argument type="Random" name="random"/>
+        </Method>
+        <Method name="generateRandomTargets" returnType="List&lt;Integer&gt;" visibility="private">
+          <Argument type="int" name="sourceIndex"/>
+          <Argument type="Random" name="random"/>
+        </Method>
+        <Method name="drawMap" returnType="void" visibility="private">
+          <Argument type="GraphicsContext" name="gc"/>
+        </Method>
+        <Method name="drawAirport" returnType="void" visibility="private">
+          <Argument type="GraphicsContext" name="gc"/>
+          <Argument type="double" name="x"/>
+          <Argument type="double" name="y"/>
+          <Argument type="String" name="location"/>
+        </Method>
+        <Method name="drawRoute" returnType="void" visibility="private">
+          <Argument type="GraphicsContext" name="gc"/>
+          <Argument type="double" name="startX"/>
+          <Argument type="double" name="startY"/>
+          <Argument type="double" name="endX"/>
+          <Argument type="double" name="endY"/>
+        </Method>
+        <Method name="convertYToLatitude" returnType="double" visibility="private">
+          <Argument type="double" name="y"/>
+        </Method>
+        <Method name="convertXToLongitude" returnType="double" visibility="private">
+          <Argument type="double" name="x"/>
+        </Method>
+        <Method name="mostrarVentanaAvionListView" returnType="void" visibility="private"/>
+        <Method name="calculateWeight" returnType="int" visibility="private">
+          <Argument type="double" name="lat1"/>
+          <Argument type="double" name="lon1"/>
+          <Argument type="double" name="lat2"/>
+          <Argument type="double" name="lon2"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Portaavion" package="" visibility="public" xPosition="620.0" yPosition="420.0">
+      <Fields>
+        <Field name="nombre" type="String" visibility="private"/>
+        <Field name="capacidadHangares" type="int" visibility="private"/>
+        <Field name="avionesEsperando" type="List&lt;Avion&gt;" visibility="private"/>
+        <Field name="combustibleDisponible" type="int" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="nombre"/>
+          <Argument type="int" name="capacidadHangares"/>
+          <Argument type="double" name="latitude"/>
+          <Argument type="double" name="longitude"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="recibirAvion" returnType="void" visibility="public">
+          <Argument type="Avion" name="avion"/>
+        </Method>
+        <Method name="getCapHang" returnType="double" visibility="public"/>
+        <Method name="despacharAvion" returnType="Avion" visibility="public">
+          <Argument type="Avion" name="avion"/>
+        </Method>
+        <Method name="getLatitude" returnType="double" visibility="public"/>
+        <Method name="getAvionesEsperando" returnType="List&lt;Avion&gt;" visibility="public"/>
+        <Method name="getNombre" returnType="String" visibility="public"/>
+        <Method name="setLatitude" returnType="void" visibility="public">
+          <Argument type="double" name="latitude"/>
+        </Method>
+        <Method name="getLongitude" returnType="double" visibility="public"/>
+        <Method name="setLongitude" returnType="void" visibility="public">
+          <Argument type="double" name="longitude"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Ruta" package="" visibility="public" xPosition="920.0" yPosition="420.0">
+      <Fields>
+        <Field name="peligro" type="double" visibility="private"/>
+        <Field name="salida" type="Lugar" visibility="private"/>
+        <Field name="destino" type="Lugar" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="Lugar" name="salida"/>
+          <Argument type="Lugar" name="destino"/>
+          <Argument type="double" name="peligro"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="calcularDistancia" returnType="double" visibility="public"/>
+        <Method name="calcularPeso" returnType="double" visibility="public"/>
+        <Method name="getSalida" returnType="Lugar" visibility="public"/>
+        <Method name="setSalida" returnType="void" visibility="public">
+          <Argument type="Lugar" name="salida"/>
+        </Method>
+        <Method name="getDestino" returnType="Lugar" visibility="public"/>
+        <Method name="setDestino" returnType="void" visibility="public">
+          <Argument type="Lugar" name="destino"/>
+        </Method>
+        <Method name="getPeligro" returnType="double" visibility="public"/>
+        <Method name="setPeligro" returnType="void" visibility="public">
+          <Argument type="double" name="peligro"/>
+        </Method>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <UseRelation source="LinkedListAvion" target="LinkedListAvion" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="aviones" source="AvionListView" target="Avion" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;Avion&gt;"/>
+    <UseRelation source="Lugar" target="Avion" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="aeropuertos" source="Grafo" target="AirPort" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;AirPort&gt;"/>
+    <HasRelation name="ubicacionActual" source="Avion" target="Lugar" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="lugares" source="AvionListView" target="Lugar" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Lugar&gt;"/>
+    <UseRelation source="AirPort" target="Avion" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="ubicaciones" source="MapApp" target="Lugar" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Lugar&gt;"/>
+    <UseRelation source="Avion" target="Lugar" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="avionesEsperando" source="AirPort" target="Avion" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Avion&gt;"/>
+    <HasRelation name="listView" source="AvionListView" target="Avion" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ListView&lt;Avion&gt;"/>
+    <HasRelation name="salida" source="Ruta" target="Lugar" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="MapApp" target="Ruta" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="dropdown" source="AvionListView" target="Lugar" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Portaavion" target="Avion" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="tiposAvion" source="MapApp" target="LinkedListAvion" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="LinkedListAvion"/>
+    <IsRelation name="is" source="AirPort" target="Lugar"/>
+    <IsRelation name="is" source="Portaavion" target="Lugar"/>
+    <HasRelation name="opcionSeleccionada" source="AvionListView" target="Lugar" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="destino" source="Ruta" target="Lugar" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Ruta" target="Lugar" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="avionesEnVuelo" source="MapApp" target="Avion" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Avion&gt;"/>
+    <UseRelation source="Avion" target="Avion" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="AvionListView" target="Avion" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Grafo" target="AirPort" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="LinkedListAvion" target="Avion" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="avionList" source="MapApp" target="AvionListView" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="AvionListView"/>
+    <HasRelation name="avionesEsperando" source="Portaavion" target="Avion" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Avion&gt;"/>
+    <UseRelation source="MapApp" target="Graph" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

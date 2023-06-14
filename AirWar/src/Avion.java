@@ -77,7 +77,7 @@ public class Avion {
 
     public int consumirCombustible(int cantidad) {
         combustible -= cantidad;
-        System.out.println("Avión " + nombre + "combustible total: " + combustible);
+       // System.out.println("Avión " + nombre + "combustible total: " + combustible);
 
         return combustible;
 
