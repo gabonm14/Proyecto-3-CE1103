@@ -1,0 +1,10 @@
+Avro RJ85,880,1350,11
+Boeing 880,900,1400,12
+Convair 900,920,1600,13
+Boeing 920,940,1500,14
+McDonnell Douglas MD-940,960,1550,15
+Boeing 960,980,1780,16
+Boeing 980,1000,1600,17
+Embraer E170,890,1200,78
+Cessna Citation X,956,880,8
+Bombardier Challenger 350,880,900,10
