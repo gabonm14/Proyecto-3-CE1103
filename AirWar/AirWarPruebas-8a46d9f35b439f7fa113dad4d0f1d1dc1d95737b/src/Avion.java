@@ -26,9 +26,7 @@ public class Avion {
         estado = EstadoAvion.EN_ESPERA;
         System.out.println("Avión " + nombre + " ha aterrizado en " + ubicacionActual);
     }
-public String getNombre(){
-    return nombre;
-}
+
     public void actualizarUbicacion(String nuevaUbicacion) {
         ubicacionActual = nuevaUbicacion;
     }

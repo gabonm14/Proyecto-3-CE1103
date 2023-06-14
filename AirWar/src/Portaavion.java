@@ -26,16 +26,22 @@ public class Portaavion extends Lugar {
             System.out.println("Portaavión " + nombre + " sin espacio en los hangares. No se puede recibir el avión " + avion);
         }
     }
+
     public double getCapHang() {
         return capacidadHangares;
     }
 
     @Override
-    public Avion despacharAvion() {
+    public Avion despacharAvion(Avion avion) {
         if (!avionesEsperando.isEmpty()) {
-            Avion avionDespachado = avionesEsperando.remove(0);
-            System.out.println("Avión " + avionDespachado + " despachado desde el portaavión " + nombre);
-            return avionDespachado;
+            boolean removed = avionesEsperando.remove(avion);
+            if (removed) {
+                System.out.println("Avión " + avion + " despachado desde el portaavión " + nombre);
+                return avion;
+            } else {
+                System.out.println("El avión " + avion + " no está esperando en el portaavión " + nombre);
+                return null;
+            }
         } else {
             System.out.println("No hay aviones esperando en el portaavión " + nombre);
             return null;
@@ -45,6 +51,10 @@ public class Portaavion extends Lugar {
     // Otros métodos y getters/setters según sea necesario
     public double getLatitude() {
         return latitude;
+    }
+@Override
+    public List<Avion> getAvionesEsperando() {
+        return avionesEsperando;
     }
 
     public String getNombre() {
