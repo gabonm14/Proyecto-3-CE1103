@@ -57,9 +57,9 @@ public class Avion {
         if (combustible < 130000) {
 
             combustible += cantidad;
-            if (combustible > 130000) {
+            if (combustible > 125000) {
                 System.out.println("Almacenamiento de combustible lleno");
-                combustible = 130000;
+                combustible = 125000;
             }
             System.out.println("Avión " + nombre + " ha recargado " + cantidad + " unidades de combustible, combustible total: " + combustible);
         } else {
@@ -80,7 +80,7 @@ public class Avion {
 
     }
 
-    public void destruir(Avion avion) {
+    public void destruir() {
         estado = EstadoAvion.DESTRUIDO;
     }
 
