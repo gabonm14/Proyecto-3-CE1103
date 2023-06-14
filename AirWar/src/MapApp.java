@@ -78,7 +78,7 @@ public class MapApp extends Application {
             Platform.runLater(() -> mostrarVentanaAvionListView());
 
             while (true) {
-                // ... código del bucle principal ...
+                
             }
         });
 
@@ -174,15 +174,21 @@ public class MapApp extends Application {
 
     }
 
-    
-
+    /**
+     *
+     * Dibuja la animación de un avión viajando a lo largo de una ruta.
+     *
+     * @param rutas La lista de rutas a seguir por el avión.
+     *
+     * @param avionn El avión que realizará el viaje.
+     */
     public void drawTravelingBall(List<Ruta> rutas, Avion avionn) {
         if (rutas.isEmpty() || avionn == null) {
             // No hay rutas en la lista
             return;
         }
         avionesEnVuelo.add(avionn);
-        //System.out.println("Aviones en vuelo: " + avionesEnVuelo);
+        System.out.println("Aviones en vuelo: " + avionesEnVuelo);
         Ruta ruta = rutas.get(0); // Obtener la primera ruta de la lista
         rutas.remove(0); // Eliminar la primera ruta de la lista
         // Convertir las coordenadas de latitud y longitud a coordenadas cartesianas
@@ -232,12 +238,8 @@ public class MapApp extends Application {
                 }
                 if (dataReceived != null) {
                     try {
-                        System.out.println("Datos recibidos: " + dataReceived);
-                        //System.out.println("Aviones en vuelo print boton :" + avionesEnVuelo);
                         avionesEnVuelo.get(0).destruir();
-                        // Eliminar el objeto de la lista (puedes ajustar la lógica según tus necesidades)
                         avionesEnVuelo.remove(0);
-                        //System.out.println("Objeto eliminado: " + objetoEliminado);
 
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {
@@ -257,7 +259,7 @@ public class MapApp extends Application {
                     //drawMap(animationGC);
 
                     //System.out.println("Distancia:  " + ruta.calcularPeso() * (distancia / ((distance))));
-// Dibujar la ruta
+                    // Dibujar la ruta
                     //System.out.println("Eficiencia: " + avionn.getEficiencia());
                     avionn.consumirCombustible((int) (avionn.getEficiencia() / 30));
                     //drawRoute(animationGC, startX, startY, endX, endY);
@@ -311,7 +313,7 @@ public class MapApp extends Application {
                     avionn.aterrizar();
                     avionesEnVuelo.remove(avionn);
                     graph.editEdge(ruta.getSalida(), ruta.getDestino(), -0.1);
-                    //System.out.println("Distancia recorrida en total:  " + ruta.calcularPeso());
+                    System.out.println("Distancia recorrida en total:  " + ruta.calcularPeso());
                     // Llamar recursivamente al método para la siguiente ruta en la lista
                     drawTravelingBall(rutas, avionn);
                     //graph.editEdge(ubicaciones.get(0), ubicaciones.get(1), -0.5);
@@ -324,23 +326,43 @@ public class MapApp extends Application {
 
     }
 
+    /**
+     *
+     * Convierte una longitud dada a la coordenada X correspondiente en el mapa.
+     *
+     * @param longitude La longitud a convertir.
+     * @return La coordenada X correspondiente a la longitud dada.
+     */
     private double convertLongitudeToX(double longitude) {
-        // Convertir la longitud a la coordenada X correspondiente
+// Convertir la longitud a la coordenada X correspondiente
         double longitudeRange = 180.0; // Rango de longitudes posibles (-180 a 180)
         return (longitude + longitudeRange / 2.0) / longitudeRange * MAP_WIDTH;
     }
 
+    /**
+     *
+     * Convierte una latitud dada a la coordenada Y correspondiente en el mapa.
+     *
+     * @param latitude La latitud a convertir.
+     * @return La coordenada Y correspondiente a la latitud dada.
+     */
     private double convertLatitudeToY(double latitude) {
-        // Convertir la latitud a la coordenada Y correspondiente
+// Convertir la latitud a la coordenada Y correspondiente
         double latitudeRange = 90.0; // Rango de latitudes posibles (-90 a 90)
         return (latitude + latitudeRange / 2.0) / latitudeRange * MAP_HEIGHT;
     }
 
+    /**
+     *
+     * Genera aeropuertos aleatorios en el mapa utilizando un generador de
+     * números aleatorios dado.
+     *
+     * @param random El generador de números aleatorios.
+     */
     public void generateRandomAirports(Random random) {
         for (int i = 0; i < NUM_AIRPORTS; i++) {
             double x, y;
             boolean isOnLand;
-
             x = random.nextDouble() * MAP_WIDTH;
             y = random.nextDouble() * MAP_HEIGHT;
 
@@ -386,8 +408,8 @@ public class MapApp extends Application {
                 Portaavion portaAviones = new Portaavion(("Portaaviones " + i), ((random.nextInt(3)) + capMinHan), latitude, longitude);
                 ubicaciones.add(portaAviones);
                 System.out.println(portaAviones.getNombre());
-//                Avion avion = new Avion("Avion", (random.nextInt(30)) + 250, 12, 3);
-//                portaAviones.recibirAvion(avion);
+                // Avion avion = new Avion("Avion", (random.nextInt(30)) + 250, 12, 3);
+                // portaAviones.recibirAvion(avion);
                 // Dibujar el portaaviones
                 drawAirport(gc, x, y, portaAviones.getNombre());
                 int z = 0;
@@ -404,6 +426,17 @@ public class MapApp extends Application {
         }
     }
 
+    /**
+     *
+     * Genera una lista de destinos aleatorios para un índice de origen dado.
+     *
+     * @param sourceIndex El índice del aeropuerto de origen.
+     *
+     * @param random Objeto Random utilizado para el aleatorización.
+     *
+     * @return Una lista de índices de aeropuertos que representan los destinos
+     * aleatorios.
+     */
     private List<Integer> generateRandomTargets(int sourceIndex, Random random) {
         List<Integer> randomTargets = new ArrayList<>();
 
@@ -417,83 +450,147 @@ public class MapApp extends Application {
         return randomTargets.subList(0, 2); // Obtener los primeros 2 elementos de forma aleatoria
     }
 
+    /**
+     *
+     * Dibuja el mapa en el contexto gráfico especificado.
+     *
+     * @param gc El contexto gráfico en el que se dibuja el mapa.
+     */
     private void drawMap(GraphicsContext gc) {
-        // Dibujar el mapa como fondo
+// Dibujar el mapa como fondo
         gc.drawImage(mapImage, 0, 0, MAP_WIDTH, MAP_HEIGHT);
 
-        // Dibujar elementos adicionales del mapa (carreteras, fronteras, etc.)
-        // ...
+// Dibujar elementos adicionales del mapa (carreteras, fronteras, etc.)
+// ...
     }
 
+    /**
+     *
+     * Dibuja un aeropuerto en el contexto gráfico especificado.
+     *
+     * @param gc El contexto gráfico en el que se dibuja el aeropuerto.
+     *
+     * @param x La coordenada X del centro del aeropuerto.
+     *
+     * @param y La coordenada Y del centro del aeropuerto.
+     *
+     * @param location La ubicación del aeropuerto.
+     */
     private void drawAirport(GraphicsContext gc, double x, double y, String location) {
-        // Dibujar el aeropuerto
+// Dibujar el aeropuerto
         gc.setFill(Color.RED);
         gc.fillOval(x - 5, y - 5, 10, 10);
 
-        // Agregar la ubicación encima del aeropuerto
+// Agregar la ubicación encima del aeropuerto
         gc.setFill(Color.BLACK);
         gc.fillText(location, x - 35, y - 10);
     }
 
+    /**
+     *
+     * Dibuja una ruta en el contexto gráfico especificado.
+     *
+     * @param gc El contexto gráfico en el que se dibuja la ruta.
+     *
+     * @param startX La coordenada X del punto de inicio de la ruta.
+     *
+     * @param startY La coordenada Y del punto de inicio de la ruta.
+     *
+     * @param endX La coordenada X del punto final de la ruta.
+     *
+     * @param endY La coordenada Y del punto final de la ruta.
+     */
     private void drawRoute(GraphicsContext gc, double startX, double startY, double endX, double endY) {
         gc.setStroke(Color.RED);
         gc.setLineWidth(2);
 
-        // Configurar el trazo punteado
+// Configurar el trazo punteado
         double dashSize = 5; // Tamaño de cada segmento de línea
         double gapSize = 7; // Tamaño del espacio entre segmentos
         gc.setLineDashes(dashSize, gapSize);
 
-        // Agregar efecto de sombra
+// Agregar efecto de sombra
         gc.setEffect(new DropShadow(10, Color.BLACK));
 
         gc.strokeLine(startX, startY, endX, endY);
 
-        // Restaurar el trazo sólido por defecto
+// Restaurar el trazo sólido por defecto
         gc.setLineDashes(null);
     }
 
+    /**
+     *
+     * Inicia el proceso de recepción.
+     */
     public void startReceiving() {
-        // Especifica el nombre del puerto y la velocidad de transmisión
+// Especifica el nombre del puerto y la velocidad de transmisión
         String portName = "COM5";
         int baudRate = 9600;
 
-        // Conecta con el dispositivo Arduino
+// Conecta con el dispositivo Arduino
         arduinoReceiver.connect(portName, baudRate);
 
-        // Espera a recibir datos (puedes agregar más lógica aquí si es necesario)
+// Espera a recibir datos (puedes agregar más lógica aquí si es necesario)
         try {
             Thread.sleep(100000000); // Espera 5 segundos
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // Desconecta el dispositivo Arduino
+// Desconecta el dispositivo Arduino
         arduinoReceiver.disconnect();
     }
 
+    /**
+     *
+     * Convierte una coordenada Y a su valor de latitud correspondiente.
+     *
+     * @param y La coordenada Y a convertir.
+     * @return El valor de latitud correspondiente.
+     */
     private double convertYToLatitude(double y) {
-        // Convertir la coordenada Y del clic al valor de latitud correspondiente
+// Convertir la coordenada Y del clic al valor de latitud correspondiente
         double latitudeRange = 90.0; // Rango de latitudes posibles (-90 a 90)
         return (y / MAP_HEIGHT) * latitudeRange - latitudeRange / 2.0;
     }
 
+    /**
+     *
+     * Convierte una coordenada X a su valor de longitud correspondiente.
+     *
+     * @param x La coordenada X a convertir.
+     * @return El valor de longitud correspondiente.
+     */
     private double convertXToLongitude(double x) {
-        // Convertir la coordenada X del clic al valor de longitud correspondiente
+// Convertir la coordenada X del clic al valor de longitud correspondiente
         double longitudeRange = 180.0; // Rango de longitudes posibles (-180 a 180)
         return (x / MAP_WIDTH) * longitudeRange - longitudeRange / 2.0;
     }
 
+    /**
+     *
+     * Muestra la ventana de la lista de aviones.
+     */
     private void mostrarVentanaAvionListView() {
         Stage stage = new Stage();
         AvionListView avionListView = new AvionListView();
         avionListView.start(stage);
     }
 
+    /**
+     *
+     * Calcula el peso (distancia) entre dos coordenadas geográficas.
+     *
+     * @param lat1 La latitud del primer punto.
+     * @param lon1 La longitud del primer punto.
+     * @param lat2 La latitud del segundo punto.
+     * @param lon2 La longitud del segundo punto.
+     * @return El peso (distancia) entre los dos puntos.
+     */
     private int calculateWeight(double lat1, double lon1, double lat2, double lon2) {
-        // Calcular el peso (distancia) entre dos coordenadas geográficas
-        // Puedes implementar aquí la fórmula de cálculo de distancia entre dos puntos geográficos
-        // Por ejemplo, la distancia euclidiana en un plano
+// Calcular el peso (distancia) entre dos coordenadas geográficas
+// Puedes implementar aquí la fórmula de cálculo de distancia entre dos puntos geográficos
+// Por ejemplo, la distancia euclidiana en un plano
         double dx = lon2 - lon1;
         double dy = lat2 - lat1;
         double distance = Math.sqrt(dx * dx + dy * dy);
@@ -506,20 +603,44 @@ public class MapApp extends Application {
 
     }
 
+    /**
+     * Representa un grafo que contiene lugares y rutas entre ellos.
+     */
     public class Graph {
 
+        /**
+         * Lista de nodos (lugares) en el grafo.
+         */
         List<Lugar> nodes;
+
+        /**
+         * Matriz de adyacencia que representa las rutas entre los nodos.
+         */
         private Ruta[][] adjacencyMatrix;
 
+        /**
+         * Constructor de la clase Graph. Inicializa la lista de nodos y la
+         * matriz de adyacencia vacías.
+         */
         public Graph() {
             nodes = new ArrayList<>();
             adjacencyMatrix = new Ruta[0][0];
         }
 
+        /**
+         * Obtiene la lista de nodos en el grafo.
+         *
+         * @return La lista de nodos en el grafo.
+         */
         public List<Lugar> getNodes() {
             return nodes;
         }
 
+        /**
+         * Agrega un nodo (lugar) al grafo.
+         *
+         * @param lugar El lugar a agregar.
+         */
         public void addNode(Lugar lugar) {
             nodes.add(lugar);
 
@@ -530,11 +651,24 @@ public class MapApp extends Application {
             adjacencyMatrix = newMatrix;
         }
 
+        /**
+         * Recibe un avión en un lugar específico.
+         *
+         * @param lugar El lugar donde se recibe el avión.
+         * @param avion El avión que se recibe.
+         */
         public void recibirAvion(Lugar lugar, Avion avion) {
             nodes.get(nodes.indexOf(lugar)).recibirAvion(avion);
-
         }
 
+        /**
+         * Edita una ruta existente entre dos lugares. Si la ruta no existe, se
+         * crea una nueva ruta entre los lugares.
+         *
+         * @param source El lugar de origen de la ruta.
+         * @param target El lugar de destino de la ruta.
+         * @param peligro El nivel de peligro de la ruta.
+         */
         public void editEdge(Lugar source, Lugar target, double peligro) {
             int sourceIndex = nodes.indexOf(source);
             int targetIndex = nodes.indexOf(target);
@@ -552,6 +686,9 @@ public class MapApp extends Application {
             }
         }
 
+        /**
+         * Imprime la matriz de adyacencia del grafo.
+         */
         public void printAdjacencyMatrix() {
             int numNodes = nodes.size();
 
@@ -574,10 +711,24 @@ public class MapApp extends Application {
             }
         }
 
+        /**
+         * Obtiene el nodo (lugar) en el índice especificado.
+         *
+         * @param index El índice del nodo deseado.
+         * @return El nodo en el índice especificado.
+         */
         public Lugar getNode(int index) {
             return nodes.get(index);
         }
 
+        /**
+         * Agrega una ruta entre dos lugares con un nivel de peligro
+         * especificado.
+         *
+         * @param source El lugar de origen de la ruta.
+         * @param target El lugar de destino de la ruta.
+         * @param peligro El nivel de peligro de la ruta.
+         */
         public void addEdge(Lugar source, Lugar target, int peligro) {
             int sourceIndex = nodes.indexOf(source);
             int targetIndex = nodes.indexOf(target);
@@ -586,6 +737,15 @@ public class MapApp extends Application {
             //adjacencyMatrix[targetIndex][sourceIndex] = ruta;
         }
 
+        /**
+         * Encuentra el camino más corto entre un lugar de origen y un lugar de
+         * destino.
+         *
+         * @param source El lugar de origen.
+         * @param target El lugar de destino.
+         * @return Una lista de rutas que representan el camino más corto entre
+         * los lugares.
+         */
         public List<Ruta> shortestPath(Lugar source, Lugar target) {
             int numNodes = nodes.size();
             int sourceIndex = nodes.indexOf(source);
@@ -650,24 +810,49 @@ public class MapApp extends Application {
             return pathRutas;
         }
 
+        /**
+         * Clase interna que representa un nodo (lugar) y su distancia asociada.
+         */
         private static class NodeDistance implements Comparable<NodeDistance> {
 
             private int node;
             private int distance;
 
+            /**
+             * Constructor de la clase NodeDistance.
+             *
+             * @param node El nodo.
+             * @param distance La distancia asociada al nodo.
+             */
             public NodeDistance(int node, int distance) {
                 this.node = node;
                 this.distance = distance;
             }
 
+            /**
+             * Obtiene el nodo.
+             *
+             * @return El nodo.
+             */
             public int getNode() {
                 return node;
             }
 
+            /**
+             * Obtiene la distancia asociada al nodo.
+             *
+             * @return La distancia asociada al nodo.
+             */
             public int getDistance() {
                 return distance;
             }
 
+            /**
+             * Compara este objeto NodeDistance con otro objeto NodeDistance.
+             *
+             * @param other El otro objeto NodeDistance a comparar.
+             * @return El resultado de la comparación.
+             */
             @Override
             public int compareTo(NodeDistance other) {
                 return Integer.compare(distance, other.distance);
