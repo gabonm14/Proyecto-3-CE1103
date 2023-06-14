@@ -8,9 +8,12 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Random;
 import static javafx.application.Application.launch;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
 
@@ -18,7 +21,7 @@ public class MapApp extends Application {
 
     private static final double MAP_WIDTH = 1280;
     private static final double MAP_HEIGHT = 720;
-    private static final int NUM_AIRPORTS = 10;
+    private static final int NUM_AIRPORTS = 6;
     private int nameAirport = 0;
     private Image mapImage;
     private PixelReader pixelReader;
@@ -44,6 +47,7 @@ public class MapApp extends Application {
             boolean isOnLand;
 
             do {
+
                 x = random.nextDouble() * MAP_WIDTH;
                 y = random.nextDouble() * MAP_HEIGHT;
 
@@ -68,42 +72,63 @@ public class MapApp extends Application {
             System.out.println(("Aeropuerto " + nameAirport) + (i + 1) + ": Latitud = " + latitude + ", Longitud = " + longitude);
         }
 
-        // Agregar aristas entre todos los aeropuertos
+        int[] nodeEdgesCount = new int[NUM_AIRPORTS];
+        Random randomTarget = new Random();
+        int totalEdges = 0;
+        int MAX_EDGES = 10; // Cambia este valor según tus necesidades
+
+        Arrays.fill(nodeEdgesCount, 0); // Inicializar todos los contadores en cero
+
         for (int i = 0; i < NUM_AIRPORTS; i++) {
-            for (int j = i + 1; j < NUM_AIRPORTS; j++) {
-                double sourceLatitude = graph.getNode(i).getLatitude();
-                double sourceLongitude = graph.getNode(i).getLongitude();
-                double targetLatitude = graph.getNode(j).getLatitude();
-                double targetLongitude = graph.getNode(j).getLongitude();
+            while (nodeEdgesCount[i] < 2 && totalEdges < MAX_EDGES) {
+                int j = randomTarget.nextInt(NUM_AIRPORTS); // Generar un índice aleatorio para el nodo de destino
 
-                int weight = calculateWeight(sourceLatitude, sourceLongitude, targetLatitude, targetLongitude);
+                if (i != j && nodeEdgesCount[j] < 2) { // Asegurarse de que no sea el mismo nodo y que el nodo de destino tenga menos de 2 aristas
+                    double sourceLatitude = graph.getNode(i).getLatitude();
+                    double sourceLongitude = graph.getNode(i).getLongitude();
+                    double targetLatitude = graph.getNode(j).getLatitude();
+                    double targetLongitude = graph.getNode(j).getLongitude();
+                    double sourceX = graph.getNode(i).getX();
+                    double sourceY = graph.getNode(i).getY();
+                    double targetX = graph.getNode(j).getX();
+                    double targetY = graph.getNode(j).getY();
 
-                graph.addEdge(i, j, weight);
-            }
-        }
+                    drawRoute(gc, sourceX, sourceY, targetX, targetY);
+                    int weight = calculateWeight(sourceLatitude, sourceLongitude, targetLatitude, targetLongitude);
 
-        // Calcular y trazar las rutas más cortas
-        for (int i = 0; i < NUM_AIRPORTS; i++) {
-            for (int j = i + 1; j < i + 2 && j < NUM_AIRPORTS; j++) {
-                List<Integer> shortestPath = graph.shortestPath(i, j);
+                    graph.addEdge(i, j, weight);
 
-                if (!shortestPath.isEmpty()) {
-                    for (int k = 0; k < shortestPath.size() - 1; k++) {
-                        int sourceNode = shortestPath.get(k);
-                        int targetNode = shortestPath.get(k + 1);
-
-                        double sourceX = graph.getNode(sourceNode).getX();
-                        double sourceY = graph.getNode(sourceNode).getY();
-                        double targetX = graph.getNode(targetNode).getX();
-                        double targetY = graph.getNode(targetNode).getY();
-
-                        drawRoute(gc, sourceX, sourceY, targetX, targetY);
-                        System.out.println("Mas corto: "+graph.shortestPath(2, 7));
-                    }
+                    nodeEdgesCount[i]++;
+                    nodeEdgesCount[j]++;
+                    totalEdges++;
                 }
             }
         }
 
+        // Calcular y trazar las rutas más cortas
+//        Random randomm = new Random();
+//        for (int i = 0; i < NUM_AIRPORTS; i++) {
+//            int numRoutes = randomm.nextInt(2) + 1; // Genera un número aleatorio entre 2 y 3
+//
+//            for (int j = 0; j < numRoutes; j++) {
+//                int targetNode = randomm.nextInt(NUM_AIRPORTS);
+//
+//                // Verificar que el nodo de destino sea diferente al nodo actual
+//                while (targetNode == i) {
+//                    targetNode = randomm.nextInt(NUM_AIRPORTS);
+//                }
+//
+//                double sourceX = graph.getNode(i).getX();
+//                double sourceY = graph.getNode(i).getY();
+//                double targetX = graph.getNode(targetNode).getX();
+//                double targetY = graph.getNode(targetNode).getY();
+//
+//                drawRoute(gc, sourceX, sourceY, targetX, targetY);
+//
+//            }
+//        }
+        graph.printAdjacencyMatrix();
+        System.out.println("Mas corto: " + graph.shortestPath(0, 5));
         StackPane root = new StackPane(canvas);
         Scene scene = new Scene(root, MAP_WIDTH, MAP_HEIGHT);
 
@@ -131,8 +156,12 @@ public class MapApp extends Application {
     }
 
     private void drawRoute(GraphicsContext gc, double startX, double startY, double endX, double endY) {
-        gc.setStroke(Color.BLUE);
+        gc.setStroke(Color.RED);
         gc.setLineWidth(2);
+
+        // Agregar efecto de sombra
+        gc.setEffect(new DropShadow(10, Color.BLACK));
+
         gc.strokeLine(startX, startY, endX, endY);
     }
 
@@ -165,17 +194,40 @@ public class MapApp extends Application {
     private static class Graph {
 
         private List<Node> nodes;
-        private List<List<Edge>> adjacencyList;
+        private int[][] adjacencyMatrix;
 
         public Graph() {
             nodes = new ArrayList<>();
-            adjacencyList = new ArrayList<>();
+            adjacencyMatrix = new int[0][0];
         }
 
         public void addNode(double latitude, double longitude) {
             Node node = new Node(latitude, longitude);
             nodes.add(node);
-            adjacencyList.add(new ArrayList<>());
+
+            int[][] newMatrix = new int[nodes.size()][nodes.size()];
+            for (int i = 0; i < adjacencyMatrix.length; i++) {
+                System.arraycopy(adjacencyMatrix[i], 0, newMatrix[i], 0, adjacencyMatrix[i].length);
+            }
+            adjacencyMatrix = newMatrix;
+        }
+
+        public void printAdjacencyMatrix() {
+            int numNodes = nodes.size();
+
+            System.out.print("  ");
+            for (int i = 0; i < numNodes; i++) {
+                System.out.printf("%3d", i);
+            }
+            System.out.println();
+
+            for (int i = 0; i < numNodes; i++) {
+                System.out.printf("%2d ", i);
+                for (int j = 0; j < numNodes; j++) {
+                    System.out.printf("%3d", adjacencyMatrix[i][j]);
+                }
+                System.out.println();
+            }
         }
 
         public Node getNode(int index) {
@@ -183,59 +235,86 @@ public class MapApp extends Application {
         }
 
         public void addEdge(int source, int target, int weight) {
-            Edge edge = new Edge(source, target, weight);
-            adjacencyList.get(source).add(edge);
-            adjacencyList.get(target).add(edge); // Agregar también la arista inversa
+            adjacencyMatrix[source][target] = weight;
+            adjacencyMatrix[target][source] = weight; // Agregar también la arista inversa
         }
 
         public List<Integer> shortestPath(int source, int target) {
-            List<Integer> shortestPath = new ArrayList<>();
-            int[] distances = new int[nodes.size()];
-            int[] previous = new int[nodes.size()];
-            boolean[] visited = new boolean[nodes.size()];
+            int numNodes = nodes.size();
 
-            for (int i = 0; i < distances.length; i++) {
-                distances[i] = Integer.MAX_VALUE;
-                previous[i] = -1;
-                visited[i] = false;
-            }
-
+            int[] distances = new int[numNodes];
+            Arrays.fill(distances, Integer.MAX_VALUE);
             distances[source] = 0;
 
-            for (int i = 0; i < nodes.size() - 1; i++) {
-                int minIndex = -1;
-                int minDistance = Integer.MAX_VALUE;
+            boolean[] visited = new boolean[numNodes];
 
-                for (int j = 0; j < nodes.size(); j++) {
-                    if (!visited[j] && distances[j] < minDistance) {
-                        minIndex = j;
-                        minDistance = distances[j];
-                    }
+            int[] previous = new int[numNodes];
+            Arrays.fill(previous, -1);
+
+            PriorityQueue<NodeDistance> pq = new PriorityQueue<>();
+            pq.offer(new NodeDistance(source, 0));
+
+            while (!pq.isEmpty()) {
+                NodeDistance minNode = pq.poll();
+                int node = minNode.getNode();
+
+                if (node == target) {
+                    break;  // Encontró el nodo destino, termina el algoritmo
                 }
 
-                visited[minIndex] = true;
+                if (visited[node]) {
+                    continue;  // Nodo ya visitado, pasa al siguiente
+                }
 
-                for (Edge edge : adjacencyList.get(minIndex)) {
-                    int neighbor = edge.getNeighbor(minIndex);
-                    int weight = edge.getWeight();
+                visited[node] = true;
 
-                    int distanceThroughMin = distances[minIndex] + weight;
+                for (int neighbor = 0; neighbor < numNodes; neighbor++) {
+                    if (adjacencyMatrix[node][neighbor] > 0) {
+                        int distance = distances[node] + adjacencyMatrix[node][neighbor];
 
-                    if (distanceThroughMin < distances[neighbor]) {
-                        distances[neighbor] = distanceThroughMin;
-                        previous[neighbor] = minIndex;
+                        if (distance < distances[neighbor]) {
+                            distances[neighbor] = distance;
+                            previous[neighbor] = node;
+                            pq.offer(new NodeDistance(neighbor, distance));
+                        }
                     }
                 }
             }
 
+            // Reconstruye la ruta desde el nodo objetivo hasta el nodo fuente
+            List<Integer> path = new ArrayList<>();
             int current = target;
 
             while (current != -1) {
-                shortestPath.add(0, current);
+                path.add(0, current);
                 current = previous[current];
             }
 
-            return shortestPath;
+            return path;
+        }
+    }
+
+    private static class NodeDistance implements Comparable<NodeDistance> {
+
+        private int node;
+        private int distance;
+
+        public NodeDistance(int node, int distance) {
+            this.node = node;
+            this.distance = distance;
+        }
+
+        public int getNode() {
+            return node;
+        }
+
+        public int getDistance() {
+            return distance;
+        }
+
+        @Override
+        public int compareTo(NodeDistance other) {
+            return Integer.compare(distance, other.distance);
         }
     }
 
