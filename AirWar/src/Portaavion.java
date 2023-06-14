@@ -3,14 +3,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AirPort extends Lugar {
+public class Portaavion extends Lugar {
 
     private String nombre;
     private int capacidadHangares;
     private List<Avion> avionesEsperando;
     private int combustibleDisponible;
 
-    public AirPort(String nombre, int capacidadHangares, double latitude, double longitude) {
+    public Portaavion(String nombre, int capacidadHangares, double latitude, double longitude) {
         super(latitude, longitude);
         this.nombre = nombre;
         this.capacidadHangares = capacidadHangares;
@@ -20,25 +20,26 @@ public class AirPort extends Lugar {
     }
 
     @Override
-
     public void recibirAvion(Avion avion) {
-        if (avionesEsperando.size() < capacidadHangares) {
-            if (avion.getEstado() != Avion.EstadoAvion.DESTRUIDO) {
+        if (avion == null) {
+            return;
+        } else {
+            if (avionesEsperando.size() < capacidadHangares) {
                 avionesEsperando.add(avion);
                 int combustiblePromedio = combustibleDisponible / capacidadHangares;
                 int rango = combustiblePromedio / 2;
                 Random random = new Random();
                 int combustibleAsignado = combustiblePromedio + random.nextInt(rango) - rango / 2;
                 avion.gestionarCombustible(combustibleAsignado);
-                System.out.println("Avión " + avion + " recibido en el aeropuerto " + nombre);
-            }else{
-               System.out.print("El avion no llegó al Airport");
+                System.out.println("Avión " + avion + " recibido en el porta avion " + nombre);
+            } else {
+                System.out.println("Porta Avion " + nombre + " sin espacio en los hangares. No se puede recibir el avión " + avion);
             }
-            
-
-        } else {
-            System.out.println("Aeropuerto " + nombre + " sin espacio en los hangares. No se puede recibir el avión " + avion);
         }
+    }
+
+    public double getCapHang() {
+        return capacidadHangares;
     }
 
     @Override
@@ -46,21 +47,16 @@ public class AirPort extends Lugar {
         if (!avionesEsperando.isEmpty()) {
             boolean removed = avionesEsperando.remove(avion);
             if (removed) {
-                System.out.println("Avión " + avion + " despachado desde el aeropuerto " + nombre);
+                System.out.println("Avión " + avion + " despachado desde el portaavión " + nombre);
                 return avion;
             } else {
-                System.out.println("El avión " + avion + " no está esperando en el aeropuerto " + nombre);
+                System.out.println("El avión " + avion + " no está esperando en el portaavión " + nombre);
                 return null;
             }
         } else {
-            System.out.println("No hay aviones esperando en el aeropuerto " + nombre);
+            System.out.println("No hay aviones esperando en el portaavión " + nombre);
             return null;
         }
-    }
-
-    @Override
-    public List<Avion> getAvionesEsperando() {
-        return avionesEsperando;
     }
 
     // Otros métodos y getters/setters según sea necesario
@@ -68,8 +64,9 @@ public class AirPort extends Lugar {
         return latitude;
     }
 
-    public double getCapHang() {
-        return capacidadHangares;
+    @Override
+    public List<Avion> getAvionesEsperando() {
+        return avionesEsperando;
     }
 
     public String getNombre() {
@@ -87,4 +84,5 @@ public class AirPort extends Lugar {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
 }
