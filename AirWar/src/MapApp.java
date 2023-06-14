@@ -25,6 +25,10 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;
 
+/**
+ *
+ * Clase principal que representa una aplicación de mapa.
+ */
 public class MapApp extends Application {
 
     private static final double MAP_WIDTH = 1280;
@@ -50,6 +54,12 @@ public class MapApp extends Application {
     public static String dataReceived = "0";
     public static int indexAvion;
 
+    /**
+     *
+     * Método de inicio de la aplicación.
+     *
+     * @param primaryStage El objeto Stage principal.
+     */
     @Override
     public void start(Stage primaryStage) {
         Thread receivingThread = new Thread(() -> {
@@ -164,10 +174,7 @@ public class MapApp extends Application {
 
     }
 
-    public void setData(String data) {
-        this.dataReceived = data;
-
-    }
+    
 
     public void drawTravelingBall(List<Ruta> rutas, Avion avionn) {
         if (rutas.isEmpty() || avionn == null) {
@@ -448,7 +455,7 @@ public class MapApp extends Application {
 
     public void startReceiving() {
         // Especifica el nombre del puerto y la velocidad de transmisión
-        String portName = "COM6";
+        String portName = "COM5";
         int baudRate = 9600;
 
         // Conecta con el dispositivo Arduino
