@@ -48,6 +48,7 @@ public class Ruta {
         }
 
         if (peligro <= 1) {
+            peligro = 1;
             return peso;
         } else {
             //System.out.println("El peso de la ruta se ajusto a "+peso + (peso * getPeligro()));

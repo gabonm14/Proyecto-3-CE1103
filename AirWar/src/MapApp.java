@@ -42,10 +42,32 @@ public class MapApp extends Application {
     private Scene scene;
     private Canvas animationCanvas = new Canvas(MAP_WIDTH, MAP_HEIGHT);
     List<Avion> avionesEnVuelo = new ArrayList<>();
+    private LinkedListAvion tiposAvion = new LinkedListAvion();
+    private int capMinHan = 6;
+    private int cantAvionesI=2;
+    AvionListView avionList = new AvionListView();
 
     @Override
     public void start(Stage primaryStage) {
-
+//        Avion avionA = new Avion("Avion A", 850, 1200, 10);
+//        Avion avionB = new Avion("Avion B", 880, 1350, 11);
+//        Avion avionC = new Avion("Avion C", 900, 1400, 12);
+//        Avion avionD = new Avion("Avion D", 920, 1450, 13);
+//        Avion avionE = new Avion("Avion E", 940, 1500, 14);
+//        Avion avionF = new Avion("Avion F", 960, 1550, 15);
+//        Avion avionG = new Avion("Avion G", 980, 1580, 16);
+//        Avion avionH = new Avion("Avion H", 1000, 1600, 17);
+//        tiposAvion.agregarAvion(avionA);
+//        tiposAvion.agregarAvion(avionB);
+//        tiposAvion.agregarAvion(avionC);
+//        tiposAvion.agregarAvion(avionD);
+//        tiposAvion.agregarAvion(avionE);
+//        tiposAvion.agregarAvion(avionF);
+//        tiposAvion.agregarAvion(avionG);
+//        tiposAvion.agregarAvion(avionH);
+ mostrarVentanaAvionListView();
+        tiposAvion.cargarListaAviones("aviones.txt");
+      tiposAvion.imprimirAviones();
         mapImage = new Image("file:src/images/map.png");  // Ruta de la imagen del mapa
         pixelReader = mapImage.getPixelReader();
 
@@ -122,7 +144,7 @@ public class MapApp extends Application {
 
                 }
                 try {
-                    Thread.sleep(random.nextInt(3) * 600); // Pausa de 2 segundos (2000 milisegundos)
+                    Thread.sleep(random.nextInt(3) * 300); // Pausa de 2 segundos (2000 milisegundos)
                 } catch (InterruptedException e) {
 
                     e.printStackTrace();
@@ -132,13 +154,6 @@ public class MapApp extends Application {
 
         thread.start();
         System.out.println("Combustible Avion 1 de 1: " + ubicaciones.get(1).getAvionesEsperando().get(0).getCombustible());
-        //drawTravelingBall(ubicaciones.get(0), ubicaciones.get(4));
-//        root = new StackPane(canvas);
-//        scene = new Scene(root, MAP_WIDTH, MAP_HEIGHT);
-//        primaryStage.setTitle("Map App");
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
-// Agregar el botón al root (StackPane)
 
     }
 
@@ -170,12 +185,12 @@ public class MapApp extends Application {
         root.getChildren().add(root2);
         // Crear el botón y establecer su posición
         Button myButton = new Button("Mi Botón");
-        myButton.setLayoutX(20);
-        myButton.setLayoutY(20);
+        myButton.setLayoutX(150);
+        myButton.setLayoutY(120);
         root.getChildren().add(myButton);
         myButton.setOnAction(e -> {
             if (!avionesEnVuelo.isEmpty()) {
-                System.out.println("Aviones en vuelo print boton :"+avionesEnVuelo);
+                System.out.println("Aviones en vuelo print boton :" + avionesEnVuelo);
                 avionesEnVuelo.get(0).destruir();
                 // Eliminar el objeto de la lista (puedes ajustar la lógica según tus necesidades)
                 avionesEnVuelo.remove(0);
@@ -187,7 +202,7 @@ public class MapApp extends Application {
         //Scene scene = new Scene(root, MAP_WIDTH, MAP_HEIGHT);
         scene.setFill(Color.TRANSPARENT);
         //animationStage.setScene(scene);
-        animationStage.show();
+        //animationStage.show();
 
         // Configurar la animación
         final int framesPerSecond = 60;
@@ -220,13 +235,18 @@ public class MapApp extends Application {
 
                     System.out.println("Distancia:  " + ruta.calcularPeso() * (distancia / ((distance))));
 // Dibujar la ruta
-                    if (animationStage.isShowing()) {
-                        animationStage.close();
-                    }
+                    System.out.println("Eficiencia: "+avionn.getEficiencia());
                     avionn.consumirCombustible((int) (avionn.getEficiencia() / 30));
                     //drawRoute(animationGC, startX, startY, endX, endY);
                     // Dibujar la bola en la posición actual
-                    animationGC.setFill(Color.BLACK);
+                    if (!avionesEnVuelo.isEmpty()) {
+                        if (avionesEnVuelo.get(0) == avionn) {
+                            animationGC.setFill(Color.WHITE);
+                        } else {
+
+                            animationGC.setFill(Color.BLACK);
+                        }
+                    }
                     animationGC.fillOval(currentPosX - 5, currentPosY - 5, 10, 10);
                     if (avionn.getEstado() == Avion.EstadoAvion.DESTRUIDO) {
                         animationGC.setFill(Color.ORANGE);
@@ -240,7 +260,7 @@ public class MapApp extends Application {
                         animationGC.setFill(Color.ORANGE);
                         animationGC.fillOval(currentPosX - 5, currentPosY - 5, 10, 10);
                         avionn.gestionarCombustible((int) -(avionn.getEficiencia()));
-
+                        avionesEnVuelo.remove(avionn);
                         graph.editEdge(ruta.getSalida(), ruta.getDestino(), 0.2);
                         graph.printAdjacencyMatrix();
                         stop();
@@ -313,11 +333,12 @@ public class MapApp extends Application {
                 double latitude = convertYToLatitude(y);
                 double longitude = convertXToLongitude(x);
 
-                AirPort airport = new AirPort("Aeropuerto " + i, ((random.nextInt(1)) + 6), latitude, longitude);
+                AirPort airport = new AirPort("Aeropuerto " + i, ((random.nextInt(3)) + capMinHan), latitude, longitude);
 
                 int z = 0;
-                while (z < airport.getCapHang() - ((random.nextInt(2)) + 3)) {
-                    Avion avion = new Avion("Avion", (random.nextInt(100)) + 880, 1200, 3);
+                while (z < (cantAvionesI)) {
+                    Avion avion = new Avion(tiposAvion.obtenerAvion(7).getNombre(), tiposAvion.obtenerAvion(0).getVelocidad(), tiposAvion.obtenerAvion(0).getEficiencia(), tiposAvion.obtenerAvion(0).getFortaleza());
+                    
                     airport.recibirAvion(avion);
                     z++;
                 }
@@ -338,7 +359,7 @@ public class MapApp extends Application {
                 double latitude = convertYToLatitude(y);
                 double longitude = convertXToLongitude(x);
 
-                Portaavion portaAviones = new Portaavion(("Portaaviones " + i), ((random.nextInt(1)) + 6), latitude, longitude);
+                Portaavion portaAviones = new Portaavion(("Portaaviones " + i), ((random.nextInt(3)) + capMinHan), latitude, longitude);
                 ubicaciones.add(portaAviones);
                 System.out.println(portaAviones.getNombre());
 //                Avion avion = new Avion("Avion", (random.nextInt(30)) + 250, 12, 3);
@@ -346,8 +367,8 @@ public class MapApp extends Application {
                 // Dibujar el portaaviones
                 drawAirport(gc, x, y, portaAviones.getNombre());
                 int z = 0;
-                while (z < portaAviones.getCapHang() - ((random.nextInt(2)) + 3)) {
-                    Avion avionPortaAvion = new Avion("Avion", (random.nextInt(100)) + 880, 1200, 3);
+                while (z < cantAvionesI) {
+                    Avion avionPortaAvion = new Avion(tiposAvion.obtenerAvion(0).getNombre(), tiposAvion.obtenerAvion(0).getVelocidad(), tiposAvion.obtenerAvion(0).getEficiencia(), tiposAvion.obtenerAvion(0).getFortaleza());
                     portaAviones.recibirAvion(avionPortaAvion);
                     z++;
                 }
@@ -419,7 +440,11 @@ public class MapApp extends Application {
         double longitudeRange = 180.0; // Rango de longitudes posibles (-180 a 180)
         return (x / MAP_WIDTH) * longitudeRange - longitudeRange / 2.0;
     }
-
+private void mostrarVentanaAvionListView() {
+        Stage stage = new Stage();
+        AvionListView avionListView = new AvionListView();
+        avionListView.start(stage);
+    }
     private int calculateWeight(double lat1, double lon1, double lat2, double lon2) {
         // Calcular el peso (distancia) entre dos coordenadas geográficas
         // Puedes implementar aquí la fórmula de cálculo de distancia entre dos puntos geográficos
@@ -453,6 +478,11 @@ public class MapApp extends Application {
                 System.arraycopy(adjacencyMatrix[i], 0, newMatrix[i], 0, adjacencyMatrix[i].length);
             }
             adjacencyMatrix = newMatrix;
+        }
+
+        public void recibirAvion(Lugar lugar, Avion avion) {
+            nodes.get(nodes.indexOf(lugar)).recibirAvion(avion);
+
         }
 
         public void editEdge(Lugar source, Lugar target, double peligro) {

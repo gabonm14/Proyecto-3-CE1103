@@ -48,6 +48,9 @@ public class Avion {
     public int getCombustible() {
         return combustible;
     }
+    public int getFortaleza() {
+        return fortaleza;
+    }
 
     public void actualizarUbicacion(Lugar nuevaUbicacion) {
         ubicacionActual = nuevaUbicacion;
